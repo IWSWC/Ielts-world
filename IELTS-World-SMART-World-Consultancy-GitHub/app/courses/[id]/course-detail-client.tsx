@@ -1,0 +1,21 @@
+"use client";
+
+import Link from "next/link";
+import { LanguageSwitcher, useSiteLanguage } from "../../components/SiteLanguage";
+import { CourseIcon } from "../../components/CourseIcon";
+import type { CourseDetailContent } from "../../course-content";
+
+export type CourseDetailRecord = { id:number;icon:string;title:string;description:string;tags:string } & CourseDetailContent;
+const lines = (value:string) => value.split("\n").map(item=>item.trim()).filter(Boolean);
+
+export function CourseDetailClient({course}:{course:CourseDetailRecord|null}) {
+  const {language}=useSiteLanguage();
+  const bn=language==="bn";
+  if(!course) return <main className="legal"><div className="legal-top"><Link className="brand" href="/"><img className="brand-mark" src="/brand-logo.png" alt="IELTS World & SMART World Consultancy logo"/><span>IELTS World &amp; SMART World Consultancy</span></Link><LanguageSwitcher/></div><h1>{bn?"কোর্সটি পাওয়া যায়নি":"Course unavailable"}</h1><p>{bn?"কোর্সটি প্রকাশিত হয়নি অথবা খুঁজে পাওয়া যায়নি।":"This course is not published or could not be found."}</p><Link className="btn btn-blue" href="/#courses">← {bn?"সব কোর্স দেখুন":"View all courses"}</Link></main>;
+  const subtitle=bn?course.subtitleBn:course.subtitle;
+  const overview=bn?course.overviewBn:course.overview;
+  const modules=lines(bn?course.modulesBn:course.modules);
+  const outcomes=lines(bn?course.outcomesBn:course.outcomes);
+  const requirements=bn?course.requirementsBn:course.requirements;
+  return <main className="course-detail-page"><header className="course-detail-nav"><Link className="brand" href="/"><img className="brand-mark" src="/brand-logo.png" alt="IELTS World & SMART World Consultancy logo"/><span><em>IELTS</em> World &amp; SMART World Consultancy</span></Link><div><LanguageSwitcher/><Link className="btn btn-light" href="/#courses">← {bn?"কোর্সসমূহ":"All courses"}</Link></div></header><section className="course-detail-hero"><div className="course-detail-glow"/><div className="course-detail-hero-copy"><CourseIcon title={course.title} fallback={course.icon} className="course-detail-icon"/><span className="eyebrow">{course.tags}</span><h1>{course.title}</h1><p>{subtitle}</p><div className="hero-actions"><Link className="btn btn-primary" href="/#contact">{bn?"ফ্রি কাউন্সেলিং বুক করুন":"Book free counselling"}</Link><a className="btn btn-light" href="tel:+8801903666656">{bn?"কল করুন":"Call us"}</a></div></div><div className="course-facts"><div><span>{bn?"সময়সীমা":"Duration"}</span><strong>{course.duration}</strong></div><div><span>{bn?"সময়সূচি":"Schedule"}</span><strong>{course.schedule}</strong></div><div><span>{bn?"লেভেল":"Level"}</span><strong>{course.level}</strong></div><div><span>{bn?"ফি":"Fee"}</span><strong>{course.fee}</strong></div></div></section><section className="course-detail-body"><article className="course-overview reveal-card"><span className="kicker">{bn?"কোর্স পরিচিতি":"COURSE OVERVIEW"}</span><h2>{bn?"এই কোর্সটি সম্পর্কে":"About this programme"}</h2><p>{overview}</p></article><div className="course-detail-columns"><article className="course-syllabus reveal-card"><span className="kicker">{bn?"যা শিখবেন":"CURRICULUM"}</span><h2>{bn?"কোর্স মডিউল":"Course modules"}</h2><ol>{modules.map((item,index)=><li key={item}><span>{String(index+1).padStart(2,"0")}</span><strong>{item}</strong></li>)}</ol></article><article className="course-outcomes reveal-card"><span className="kicker">{bn?"ফলাফল":"LEARNING OUTCOMES"}</span><h2>{bn?"কোর্স শেষে আপনি পারবেন":"What you will achieve"}</h2><ul>{outcomes.map(item=><li key={item}>✓ <span>{item}</span></li>)}</ul><div className="requirements"><h3>{bn?"ভর্তির প্রয়োজনীয়তা":"Entry requirements"}</h3><p>{requirements}</p></div></article></div><section className="course-enrol-cta reveal-card"><div><span className="kicker">{bn?"পরবর্তী ধাপ":"YOUR NEXT STEP"}</span><h2>{bn?"সঠিক ব্যাচ বেছে নিতে আমাদের সঙ্গে কথা বলুন":"Talk to us about the right batch for you"}</h2><p>{bn?"আপনার লক্ষ্য, বর্তমান দক্ষতা ও সময় অনুযায়ী আমরা উপযুক্ত study plan সাজিয়ে দেব।":"We will recommend a suitable study plan based on your goal, current level and available time."}</p></div><Link className="btn btn-primary" href="/#contact">{bn?"কাউন্সেলিং নিন →":"Get counselling →"}</Link></section></section></main>;
+}
